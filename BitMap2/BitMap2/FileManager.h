@@ -18,10 +18,10 @@ public:
 
 public:
 	vector<vector<int>> get_raw_data();
-	int* get_bitmap_data();
+	vector<string> get_bitmap_data();
 
 	void write_frequency_count(int* count);
-	void write_bitmap(int* int_map);
+	void write_bitmap(vector<string> string_map);
 };
 
 // FileManager constructor
@@ -61,7 +61,38 @@ vector<vector<int> > FileManager::get_raw_data()
 	{
 		cout << "Error: file did not open...\n";
 	}
+	file.close();
 	return data_matrix;
+}
+
+vector<string> FileManager::get_bitmap_data()
+{
+	string line;
+	vector<string> bitmap_data;
+	ifstream file(m_filename);
+	if (file.is_open())
+	{
+		while (getline(file, line))
+		{
+			bitmap_data.push_back(line);
+		}
+		file.close();
+	}
+	else { cout << "Bitmap file not open..." << endl; }
+
+	return bitmap_data;
+}
+
+void FileManager::write_bitmap(vector<string> string_map)
+{
+	ofstream file;
+	file.open(m_filename, ofstream::out, ofstream::trunc);
+	int i = 0;
+	for (i = 0; i < string_map.size(); i++)
+	{
+		file << string_map[i] << endl;
+	}
+	file.close();
 }
 
 

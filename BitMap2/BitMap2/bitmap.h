@@ -19,8 +19,10 @@ public:
 
 public:
 	void print_map();
-	void build_map(vector<vector<int>> normal_data);
+	void build_map(vector<string> normal_data);
 	void build_map(vector<vector<int> > data, vector<int> unique_identifiers);
+
+	int count_freq(string string_set);
 };
 
 template <size_t N>
@@ -49,17 +51,35 @@ void BitMap<N>::build_map(vector<vector<int> > data, vector<int> unique_identifi
 
 
 template <size_t N>
-void BitMap<N>::build_map(vector<vector<int>> normalized_data)
+void BitMap<N>::build_map(vector<string> normalized_data)
 {
-	map.resize(normal_data.size());
-	int i = 0, j = 0;
-	for (i = 0; i < normal_data.size(); i++)
+	int i = 0;
+	for (i = 0; i < normalized_data.size(); i++)
 	{
-		for (j = 0; j < normal_data[i].size(); j++)
-		{
-			map[i].set(normal_data[i][j]);
-		}
+		bitset<N> a(normalized_data[i]);
+		map.push_back(a);
 	}
+}
+
+template <size_t N>
+int BitMap<N>::count_freq(string string_set)
+{
+	int count = 0, i;
+	bitset<N> set(string_set);
+	for (i = 0; i < map.size(); i++)
+	{
+		bool check = false;
+		if ((map[i] & set) == set)
+		{
+			count++;
+			check = true;
+		}
+		//cout << map[i].to_string() << " :: "
+		//	 << set.to_string() << "  ==>  ";
+		//cout << (map[i] & set) << "  ->  " << check << endl;
+	}
+	//cout << endl;
+	return count;
 }
 
 template <size_t N>

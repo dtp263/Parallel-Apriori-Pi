@@ -5,8 +5,13 @@
 #include "bitmap.h"
 #include <vector>
 #include <set>
+#include "itemset.h"
+#include "itemset_manager.h"
 
 using namespace std;
+
+typedef set<int> itemset;
+
 
 template <size_t N>
 class Apriori_Manager
@@ -23,15 +28,72 @@ public:
 public:
 	void print_unique_identifiers();
 	void build_bitmap(string type);
+
 	void write_bitmap_file(string target_file);
 	int count_frequency(vector<int> set);
-	vector<vector<int>> generate_set(int length);
-	vector<int> generate(int offset, int length, vector<int> *items, vector<int> *combo, vector<vector<int>> *set_o_sets);
+	vector<ItemSet> count_multiple_frequencies(vector<ItemSet> sets);
+
+	set<itemset> generate_sets(size_t k, itemset s);
+
+	vector<ItemSet> initial_count();
+
+	void print_itemsets(set<itemset> sets);
 
 private:
 	
 	void define_unique_identifiers(vector<vector<int> > data_matrix);
 };
+
+template <size_t N>
+vector<ItemSet> Apriori_Manager<N>::count_multiple_frequencies(vector<ItemSet> sets)
+{
+	int i;
+	for (i = 0; i < sets.size(); i++)
+	{
+		sets[i].count = count_frequency(sets[i].set);
+	}
+	return sets;
+}
+
+template <size_t N>
+vector<ItemSet> Apriori_Manager<N>::initial_count()
+{
+	vector<ItemSet> results;
+	ItemSet tmp = ItemSet();
+	int i;
+	for (i = 0; i < m_unique_identifiers.size(); i++)
+	{
+		tmp.clear();
+		tmp.set.push_back(i);
+		tmp.count = count_frequency(tmp.set);
+		results.push_back(tmp);
+	}
+	return results;
+}
+
+template <size_t N>
+set<itemset> Apriori_Manager<N>::generate_sets(size_t k, itemset s)
+{
+	if (k == 0 || s.empty() || s.size() < k) { return{ { } }; }
+	if (s.size() == k) { return{ s }; }
+	auto x = *s.begin();
+	s.erase(s.begin());
+
+	set<itemset> result;
+
+	for (auto & t : generate_sets(k - 1, s))
+	{
+		auto r = move(t);
+		r.insert(x);
+		result.insert(move(r));
+	}
+
+	for (auto & t : generate_sets(k, s))
+	{
+		result.insert(move(t));
+	}
+	return result;
+}
 
 // Apriori_Manager constructor
 template <size_t N>
@@ -106,39 +168,6 @@ void Apriori_Manager<N>::define_unique_identifiers(vector<vector<int> > data_mat
 	m_unique_identifiers = flat_data;
 }
 
-template <size_t N>
-vector<int> generate(int offset, int length, vector<int> *items, vector<int> *combo, vector<vector<int>> *set_o_sets)
-{
-	if (length == 0) {
-		/*pretty_print(combination);*/
-		set_o_sets->push_back(combo);
-		return combo;
-	}
-	for (int i = offset; i <= items->size() - length; ++i) {
-		combo->push_back(items[i]);
-		generate(i + 1, length - 1, items, combo, set_o_sets);
-		combo->pop_back();
-	}
-}
-
-template <size_t N>
-vector<vector<int>> Apriori_Manager<N>::generate_set(int length)
-{
-	vector<int> *items = new vector<int>;
-	vector<int> *combo = new vector<int>;
-	vector<vector<int>> *set_o_sets = new vector<vector<int>>;
-	for (int i = 0; i < N; ++i) 
-	{ 
-		items->push_back(i + 1); 
-	}
-	generate(0, length, items, combo, set_o_sets);
-	const vector<vector<int>> final_set = &set_o_sets;
-	return final_set;
-}
-
-
-
-
 
 template <size_t N>
 void Apriori_Manager<N>::print_unique_identifiers()
@@ -149,6 +178,21 @@ void Apriori_Manager<N>::print_unique_identifiers()
 		cout << i << " :: " << m_unique_identifiers[i] << endl;
 	}
 }
+
+template <size_t N>
+void Apriori_Manager<N>::print_itemsets(set<itemset> sets)
+{
+	set < set <int> >::iterator it_ex; // iterator for the "outer" structure
+	set <int>::iterator it_in; // iterator for the "inner" structure
+
+	for (it_ex = sets.begin(); it_ex != sets.end(); it_ex++)
+	{
+		for (it_in = it_ex->begin(); it_in != it_ex->end(); it_in++)
+			cout << *it_in << ", ";
+		cout << endl;
+	}
+}
+
 
 template <size_t N>
 void Apriori_Manager<N>::write_bitmap_file(string target_file)

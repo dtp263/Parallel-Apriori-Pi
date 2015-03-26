@@ -68,11 +68,14 @@
   <ItemGroup>
     <ClCompile Include="bitmap.cpp" />
     <ClCompile Include="bitmap.h" />
+    <ClCompile Include="itemset.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Apriori_Manager.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="itemset.h" />
+    <ClInclude Include="itemset_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test2.txt" />

@@ -24,12 +24,21 @@
     <ClCompile Include="bitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="itemset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Apriori_Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="itemset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="itemset_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

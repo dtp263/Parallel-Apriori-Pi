@@ -1,5 +1,6 @@
 #include "bitmap.h"
 #include "Apriori_Manager.h"
+#include "itemset_manager.h"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -13,9 +14,10 @@ using namespace std;
 
 int main()
 {
-	// declare num of different items
+	// declare constants for now
+	// these will be arguements for main later on
 	const size_t num_of_items = 5;
-
+	const double min_support = .01;
 
 
 	string filename = "test2.txt";
@@ -43,27 +45,34 @@ int main()
 
 
 
-
+	// Create another instance of Apriori_Manager to test:
+	//		+ read text file containing bitmap
+	//		+ build bitmap with that file
 	Apriori_Manager<num_of_items> b_manager(slave_file);
 	b_manager.build_bitmap("bit");
 	b_manager.m_map.print_map();
 
 
-	cout << endl << "==========================Frequency counting tests==========================" << endl;
-	vector<int> tmp_vec;
-	
-	int j, tmp;
-	for (j = 0; j < num_of_items; j++)
-	{
-		tmp_vec.push_back(j);
-		tmp = b_manager.count_frequency(tmp_vec);
-		cout << "Item " << j << ": " << tmp << endl;
-		tmp_vec.clear();
-	}
+	cout << endl << "==========================Initial Count==========================" << endl;
+	// create itemset manager and store the initial count in it
 
-	// TODO: issue with returning the "set_o_sets" variable
-	// 
-	//vector<vector<int>> sets = b_manager.generate_set(1);
+	ItemSet_Manager set_manager(a_manager.initial_count());
+
+	cout << set_manager.to_pretty_string() << endl;
+	
+	cout << endl << "==========================New Sets==========================" << endl;
+	
+	int freq_for_minsup = (int)(a_manager.m_map.map.size() * (double)min_support);
+
+	set_manager.generate_sets(freq_for_minsup);
+
+	cout << set_manager.to_pretty_string() << endl;
+
+	cout << endl << "==========================Second Count==========================" << endl;
+
+	set_manager.sets = a_manager.count_multiple_frequencies(set_manager.sets);
+
+	cout << set_manager.to_pretty_string() << endl;
 
 	cin.ignore();
 

@@ -33,11 +33,11 @@ public:
 	int count_frequency(vector<int> set);
 	vector<ItemSet> count_multiple_frequencies(vector<ItemSet> sets);
 
-	set<itemset> generate_sets(size_t k, itemset s);
+	//set<itemset> generate_sets(size_t k, itemset s);
 
 	vector<ItemSet> initial_count();
 
-	void print_itemsets(set<itemset> sets);
+	//void print_itemsets(set<itemset> sets);
 
 private:
 	
@@ -69,30 +69,6 @@ vector<ItemSet> Apriori_Manager<N>::initial_count()
 		results.push_back(tmp);
 	}
 	return results;
-}
-
-template <size_t N>
-set<itemset> Apriori_Manager<N>::generate_sets(size_t k, itemset s)
-{
-	if (k == 0 || s.empty() || s.size() < k) { return{ { } }; }
-	if (s.size() == k) { return{ s }; }
-	auto x = *s.begin();
-	s.erase(s.begin());
-
-	set<itemset> result;
-
-	for (auto & t : generate_sets(k - 1, s))
-	{
-		auto r = move(t);
-		r.insert(x);
-		result.insert(move(r));
-	}
-
-	for (auto & t : generate_sets(k, s))
-	{
-		result.insert(move(t));
-	}
-	return result;
 }
 
 // Apriori_Manager constructor
@@ -154,8 +130,6 @@ void Apriori_Manager<N>::define_unique_identifiers(vector<vector<int> > data_mat
 		}
 		cout << endl;
 	}
-	
-
 	// Used sets because this flat data will be massive.
 	// There might be a better way to do this...
 	set<int> s;
@@ -178,21 +152,6 @@ void Apriori_Manager<N>::print_unique_identifiers()
 		cout << i << " :: " << m_unique_identifiers[i] << endl;
 	}
 }
-
-template <size_t N>
-void Apriori_Manager<N>::print_itemsets(set<itemset> sets)
-{
-	set < set <int> >::iterator it_ex; // iterator for the "outer" structure
-	set <int>::iterator it_in; // iterator for the "inner" structure
-
-	for (it_ex = sets.begin(); it_ex != sets.end(); it_ex++)
-	{
-		for (it_in = it_ex->begin(); it_in != it_ex->end(); it_in++)
-			cout << *it_in << ", ";
-		cout << endl;
-	}
-}
-
 
 template <size_t N>
 void Apriori_Manager<N>::write_bitmap_file(string target_file)

@@ -20,7 +20,6 @@ public:
 	ItemSet_Manager(vector<ItemSet> t_sets) { sets = t_sets; }
 
 	string to_pretty_string();
-
 	vector<ItemSet> generate_sets(int min_sup_freq);
 };
 
@@ -39,7 +38,6 @@ string ItemSet_Manager::to_pretty_string()
 //level: the current level of the inputted Itemset
 bool compare_chunks(const ItemSet &ck, const ItemSet &ck_1, int level){
 	//do not check the last one
-
 	vector<int> ck_item = ck.set;
 	vector<int> ck_1_item = ck_1.set;
 
@@ -57,8 +55,6 @@ bool compare_chunks(const ItemSet &ck, const ItemSet &ck_1, int level){
 vector<ItemSet> ItemSet_Manager::generate_sets(int min_sup_freq)
 {
 	vector<ItemSet> tmp;
-
-
 	clock_t gencandidate_str = clock();
 
 	//current level cnt = the length of current candidate items
@@ -85,31 +81,19 @@ vector<ItemSet> ItemSet_Manager::generate_sets(int min_sup_freq)
 			if (compare_chunks((*c_inner_iter), (*c_outter_iter), curlevel)){
 				//the previous items are equal, then generate a new lnp1
 				ItemSet lnp1_item;
-
 				lnp1_item.set.resize(nextlevel);
-				/*ItemSet_init(lnp1_item, nextlevel); replacement line above*/
 
 				//sort with insc by check the last item
 				if (c_inner_iter->set[cur_arr_index] > c_outter_iter->set[cur_arr_index]){
 					//push the outter first and push the inner
-
 					lnp1_item.set = (*c_outter_iter).set;
-					/*Itemset_pushArr(lnp1_item, (*c_outter_iter), curlevel);*/
-
 					lnp1_item.set.insert(lnp1_item.set.begin() + next_arr_index, c_inner_iter->set[cur_arr_index]);
-					//lnp1_item.set[next_arr_index] = c_inner_iter->set[cur_arr_index];
-					/*Itemset_push(lnp1_item, next_arr_index, c_inner_iter->set[cur_arr_index]);*/
-
-
 				}
 				else{
 					//push the inner first and push the outter
 					lnp1_item.set = (*c_outter_iter).set;
-					/*Itemset_pushArr(lnp1_item, (*c_inner_iter), curlevel);*/
-
 					lnp1_item.set.insert(lnp1_item.set.begin() + next_arr_index, c_outter_iter->set[cur_arr_index]);
-					//lnp1_item.set[next_arr_index] = c_outter_iter->set[cur_arr_index];
-					//Itemset_push(lnp1_item, next_arr_index, c_outter_iter->set[cur_arr_index]);
+
 
 				}
 				// Check if frequent enough
@@ -128,13 +112,6 @@ vector<ItemSet> ItemSet_Manager::generate_sets(int min_sup_freq)
 		}
 	}
 
-	Ln = &sets;
-	
-	//clear Ln's bitmap and items
-	//vector<ItemSet>::iterator free_ln_iter = Ln->begin();
-	//for (; free_ln_iter != Ln->end(); ++free_ln_iter){
-	//	free_ln_iter->clear();
-	//}
 
 	//push Lnp1 into Ln_itemsets
 	sets = *Lnp1;

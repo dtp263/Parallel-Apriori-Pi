@@ -40,8 +40,6 @@ void BitMap<N>::build_map(vector<vector<int> > data, vector<int> unique_identifi
 	{
 		for (j = 0; j < data[i].size(); j++)
 		{
-			//vector<int> tmp = find(unique_identifiers.begin(), unique_identifiers.end(), data[i][j]);
-			//size_t index = tmp - data[i].begin();
 			size_t index = (find(unique_identifiers.begin(), unique_identifiers.end(), data[i][j]) - unique_identifiers.begin());
 			map[i].set(index);
 		}

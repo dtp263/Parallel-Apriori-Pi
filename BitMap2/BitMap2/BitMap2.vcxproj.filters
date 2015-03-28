@@ -46,5 +46,11 @@
     <Text Include="test2.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="100x1000.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="1x1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

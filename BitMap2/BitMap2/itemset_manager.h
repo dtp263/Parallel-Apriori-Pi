@@ -20,8 +20,36 @@ public:
 	ItemSet_Manager(vector<ItemSet> t_sets) { sets = t_sets; }
 
 	string to_pretty_string();
-	vector<ItemSet> generate_sets(int min_sup_freq);
+	string to_set_string();
+	vector<ItemSet> generate_sets();
+
+	bool prune_sets(int map_size, double min_support);
 };
+
+bool ItemSet_Manager::prune_sets(int map_size, double min_support)
+{
+	int freq_for_minsup = (int)(map_size * (double)min_support);
+	vector<ItemSet>::iterator it = sets.begin();
+
+	printf("Prunning %d sets => ", sets.size());
+
+	clock_t time_start = clock();
+
+	for (; it != sets.end();)
+	{
+			if ((*it).count < freq_for_minsup)
+			{
+				it = sets.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+	}
+	clock_t time_end = clock();
+	printf("(%f) secs\n", (double)(time_end - time_start) / (double)CLOCKS_PER_SEC);
+	return true;
+}
 
 string ItemSet_Manager::to_pretty_string()
 {
@@ -30,6 +58,17 @@ string ItemSet_Manager::to_pretty_string()
 	for (i = 0; i < sets.size(); i++)
 	{
 		output += sets[i].to_pretty_string() + "\n";
+	}
+	return output;
+}
+
+string ItemSet_Manager::to_set_string()
+{
+	int i;
+	string output = "Set Print\n";
+	for (i = 0; i < sets.size(); i++)
+	{
+		output += "\t" + sets[i].to_set_string() + "\n";
 	}
 	return output;
 }
@@ -44,7 +83,6 @@ bool compare_chunks(const ItemSet &ck, const ItemSet &ck_1, int level){
 	int and_cnt = 0;
 	int tmp;
 	for (and_cnt = 0; and_cnt < level - 1; and_cnt++){
-
 		if (ck_item[and_cnt] != ck_1_item[and_cnt]){
 			return false;
 		}
@@ -52,7 +90,7 @@ bool compare_chunks(const ItemSet &ck, const ItemSet &ck_1, int level){
 	return true;
 }
 
-vector<ItemSet> ItemSet_Manager::generate_sets(int min_sup_freq)
+vector<ItemSet> ItemSet_Manager::generate_sets()
 {
 	vector<ItemSet> tmp;
 	clock_t gencandidate_str = clock();
@@ -96,17 +134,6 @@ vector<ItemSet> ItemSet_Manager::generate_sets(int min_sup_freq)
 
 
 				}
-				// Check if frequent enough
-
-				// TODO: clean this up. I dont think i need to prune just yet.....
-
-				//lnp1_item.bitmap = bitmap_intersect(c_inner_iter->bitmap, c_outter_iter->bitmap, bitmap_length);
-				//if (lnp1_item.count < min_sup_freq){
-				//	//in-frequent
-				//	/*Itemset_free(lnp1_item);*/
-				//	lnp1_item.clear();
-				//}
-				//else
 					Lnp1->push_back(lnp1_item);
 			}
 		}

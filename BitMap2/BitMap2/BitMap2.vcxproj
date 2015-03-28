@@ -78,6 +78,8 @@
     <ClInclude Include="itemset_manager.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="100x1000.txt" />
+    <Text Include="1x1.txt" />
     <Text Include="test2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

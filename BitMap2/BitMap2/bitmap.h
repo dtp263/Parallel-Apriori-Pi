@@ -11,8 +11,7 @@ template <size_t N>
 class BitMap
 {
 public:
-	vector<bitset<N>> map;
-
+	vector<vector<bool>> map;
 	BitMap() {}
 	// Nomalized means that it is now item_numbers rather than what was in the file
 	BitMap(vector<vector<int>> normalized_data);
@@ -34,8 +33,11 @@ BitMap<N>::BitMap(vector<vector<int>> normalized_data)
 template <size_t N>
 void BitMap<N>::build_map(vector<vector<int> > data, vector<int> unique_identifiers)
 {
+	// Limit on the size of a vector<bitset<N>>
+	//		When N is really large the vector wont initialize due to the MAX_SIZE of vector
 	map.resize(data.size());
-	int i = 0, j = 0;
+	unsigned int i = 0, j = 0;
+	printf("Building Bitmap\n");
 	for (i = 0; i < data.size(); i++)
 	{
 		for (j = 0; j < data[i].size(); j++)

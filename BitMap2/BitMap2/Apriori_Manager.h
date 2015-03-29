@@ -108,10 +108,12 @@ void Apriori_Manager<N>::build_bitmap(string type)
 	else if (type == "bit")
 	{
 		string output = m_target_filename.substr(0, m_target_filename.find_last_of("."));
-		output += "_map.txt";
+		output += "_map.bin";
 		fmanager.m_filename = output;
-		vector<string> data_matrix;
-		data_matrix = fmanager.get_bitmap_data();
+		vector<vector<bool>> data_matrix;
+		
+		data_matrix = fmanager.get_bitmap_data(N);
+
 		m_map.build_map(data_matrix);
 	}
 }
@@ -120,13 +122,13 @@ void Apriori_Manager<N>::build_bitmap(string type)
 template <size_t N>
 int Apriori_Manager<N>::count_frequency(vector<int> set)
 {
-	bitset<N> a;
+	vector<bool> a(N, 0);
 	int i;
 	for (i = 0; i < set.size(); i++)
 	{
-		a.set(set[i]);
+		a[i] = 1;
 	}
-	return m_map.count_freq(a.to_string());
+	return m_map.count_freq(a);
 }
 
 template <size_t N>
@@ -170,18 +172,13 @@ template <size_t N>
 void Apriori_Manager<N>::write_bitmap_file()
 {
 	string output = m_target_filename.substr(0, m_target_filename.find_last_of("."));
-	output += "_map.txt";
+	output += "_map.bin";
 	FileManager f_manager = FileManager(output);
-	vector<string> string_map;
-	int i = 0;
 
-	printf("Writing %d bitmap => ", m_map.map.size());
 	clock_t time_start = clock();
-	for (i = 0; i < m_map.map.size(); i++)
-	{
-		string_map.push_back(m_map.map[i].to_string());
-	}
-	f_manager.write_bitmap(string_map);
+
+	f_manager.write_bitmap(m_map.map);
+
 	clock_t time_end = clock();
 	printf("(%f) secs\n", (double)(time_end - time_start) / (double)CLOCKS_PER_SEC);
 }

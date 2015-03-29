@@ -7,8 +7,16 @@
 *.userosscache
 *.sln.docstates
 
+
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+
+
+# load testing files
+100x1000.txt
+1x1.txt
+
 
 # Build results
 [Dd]ebug/

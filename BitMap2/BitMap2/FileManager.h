@@ -25,10 +25,10 @@ public:
 
 public:
 	vector<vector<int>> get_raw_data();
-	vector<string> get_bitmap_data();
+	vector<vector<bool>> get_bitmap_data(unsigned int width);
 
 	void write_frequency_count(int* count);
-	void write_bitmap(vector<string> string_map);
+	void write_bitmap(vector<vector<bool>> map);
 	void write_results(vector<ItemSet> sets);
 };
 
@@ -95,38 +95,43 @@ vector<vector<int> > FileManager::get_raw_data()
 	return result;
 }
 
-vector<string> FileManager::get_bitmap_data()
+vector<vector<bool>> FileManager::get_bitmap_data(unsigned int width)
 {
 	string line;
-	vector<string> bitmap_data;
-	ifstream file(m_filename);
-	if (file.is_open())
+	vector<vector<bool>> result;
+	vector<bool> tmp(width, 0);
+	FILE *file;
+	//// open binary file for 
+	file = fopen(m_filename.c_str(), "rb");
+	if (file)
 	{
-		while (getline(file, line))
-		{
-			bitmap_data.push_back(line);
-		}
-		file.close();
+		fread(&tmp, sizeof(tmp), 1, file);
 	}
 	else { cout << "Bitmap file not open..." << endl; }
 
-	return bitmap_data;
+	return result;
 }
 
-void FileManager::write_bitmap(vector<string> string_map)
+void FileManager::write_bitmap(vector<vector<bool>> map)
 {
-	ofstream file;
-	file.open(m_filename, ofstream::out, ofstream::trunc);
-	if (!file.is_open())
+	//ofstream file;
+	////file.open(m_filename, ios::binary | ios::out, ios::trunc);
+	unsigned int width = map[0].size();
+	FILE *file;
+	//// open binary file for 
+	file = fopen(m_filename.c_str(), "wb");
+	if (!file)
 	{
 		cout << "Error bitmap file to write isnt open..." << endl;
+		return;
 	}
 	int i = 0;
-	for (i = 0; i < string_map.size(); i++)
+	for (i = 0; i < map.size(); i++)
 	{
-		file << string_map[i] << endl;
+		fwrite(&(map[i]), sizeof(map[i]), 1, file);
+		//file.write(&(map[i]), width);
 	}
-	file.close();
+	fclose(file);
 }
 
 void FileManager::write_results(vector<ItemSet> sets)
